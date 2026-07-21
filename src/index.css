@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Calistoga&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --ink: #1b0905;
+  --muted-ink: #72584d;
+  --cream: #fff3dc;
+  --orange: #ff9f31;
+  --red: #d92f0b;
+  --display: 'Calistoga', Georgia, serif;
+  --body: 'Manrope', 'Segoe UI', sans-serif;
+  color: var(--ink);
+  background: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ink);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--ink);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  color: var(--cream);
+  background: var(--red);
+}
+
+@media (max-width: 720px) {
+  :root {
+    font-size: 16px;
+  }
+}
