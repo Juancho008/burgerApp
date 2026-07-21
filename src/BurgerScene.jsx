@@ -29,8 +29,9 @@ function BurgerModel() {
 
 useGLTF.preload('/burger.glb')
 
-export default function BurgerScene({ scrollProgress, lowPower = false }) {
+export default function BurgerScene({ scrollProgress, lowPower = false, onReady }) {
   const groupRef = useRef()
+  const readyNotified = useRef(false)
   const { viewport } = useThree()
 
   const isNarrow = viewport.width < 7
@@ -40,6 +41,13 @@ export default function BurgerScene({ scrollProgress, lowPower = false }) {
   const targetX = isNarrow ? 0 : viewport.width * 0.21
 
   useFrame((state, delta) => {
+    // Este componente queda suspendido hasta que el GLB termina de cargar, así que
+    // el primer frame que se dibuja ya incluye la hamburguesa completa.
+    if (!readyNotified.current) {
+      readyNotified.current = true
+      onReady?.()
+    }
+
     const group = groupRef.current
     if (!group) return
 

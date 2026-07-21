@@ -106,18 +106,19 @@ const allProducts = [...products.burgers, ...products.drinks, ...products.desser
 
 const formatPrice = (value) => `$${value.toFixed(2)}`
 
-function LoadingScreen() {
-  const { progress } = useProgress()
+function LoadingScreen({ ready }) {
+  const { progress, errors } = useProgress()
   const [hidden, setHidden] = useState(false)
   const [forced, setForced] = useState(false)
 
   useEffect(() => {
-    // Salvaguarda: nunca dejar la pantalla de carga más de 8 segundos.
-    const timeout = setTimeout(() => setForced(true), 8000)
+    // Salvaguarda: si algo falla (WebGL, red), no dejar la pantalla bloqueada para siempre.
+    const timeout = setTimeout(() => setForced(true), 20000)
     return () => clearTimeout(timeout)
   }, [])
 
-  const done = progress >= 100 || forced
+  // Solo se cierra cuando la escena 3D ya renderizó su primer frame con el modelo cargado.
+  const done = ready || forced || errors.length > 0
 
   useEffect(() => {
     if (done) {
@@ -133,9 +134,9 @@ function LoadingScreen() {
       <span className="loader__mark">F!</span>
       <strong className="loader__title">FUEGO</strong>
       <div className="loader__bar">
-        <span style={{ transform: `scaleX(${done ? 1 : Math.min(progress, 100) / 100})` }} />
+        <span style={{ transform: `scaleX(${done ? 1 : Math.min(progress, 99) / 100})` }} />
       </div>
-      <span className="loader__percent">{done ? 100 : Math.round(Math.min(progress, 100))}%</span>
+      <span className="loader__percent">{done ? 100 : Math.round(Math.min(progress, 99))}%</span>
       <p className="loader__hint">Encendiendo la parrilla…</p>
     </div>
   )
@@ -185,6 +186,7 @@ function App() {
   const [navOpen, setNavOpen] = useState(false)
   const [bump, setBump] = useState(false)
   const [isMobile] = useState(() => window.matchMedia('(max-width: 768px), (pointer: coarse)').matches)
+  const [sceneReady, setSceneReady] = useState(false)
   const scrollProgress = useRef(0)
   const heroRef = useRef(null)
 
@@ -275,7 +277,7 @@ function App() {
 
   return (
     <div className="site-shell">
-      <LoadingScreen />
+      <LoadingScreen ready={sceneReady} />
 
       <a className="skip-link" href="#menu">
         Saltar al menú
@@ -336,7 +338,11 @@ function App() {
                 shadows={!isMobile}
               >
                 <Suspense fallback={null}>
-                  <BurgerScene scrollProgress={scrollProgress} lowPower={isMobile} />
+                  <BurgerScene
+                    scrollProgress={scrollProgress}
+                    lowPower={isMobile}
+                    onReady={() => setSceneReady(true)}
+                  />
                 </Suspense>
               </Canvas>
             </div>

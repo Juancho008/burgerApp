@@ -926,13 +926,23 @@ footer > span {
     bottom: 20%;
   }
 
-  .ingredient-note--one,
+  /* En pantallas medianas el canvas baja (top: 24%) y la hamburguesa queda
+     centrada más abajo: se reubican las notas para que apunten a cada capa. */
+  .ingredient-note--one {
+    top: 51%;
+    right: 5%;
+  }
+
   .ingredient-note--two {
+    top: 63%;
     right: 5%;
   }
 
   .ingredient-note--three {
-    left: 8%;
+    top: 73%;
+    left: 7%;
+    /* La nota queda a la izquierda de la hamburguesa: la línea debe apuntar hacia ella (derecha). */
+    flex-direction: row-reverse;
   }
 
   .section-heading {
@@ -1042,22 +1052,26 @@ footer > span {
 
   .ingredient-note {
     font-size: 0.49rem;
+    /* En móvil las notas quedan sobre la hamburguesa: sombra para que se lean. */
+    color: rgba(255, 247, 229, 0.92);
+    text-shadow: 0 1px 8px rgba(23, 6, 3, 0.95), 0 0 3px rgba(23, 6, 3, 0.85);
   }
 
   .ingredient-note::before {
     width: 26px;
   }
 
+  /* En móvil la hamburguesa ocupa aprox. el 56%–87% de la altura del hero. */
   .ingredient-note--one {
-    top: 47%;
+    top: 58%;
   }
 
   .ingredient-note--two {
-    top: 64%;
+    top: 69%;
   }
 
   .ingredient-note--three {
-    top: 78%;
+    top: 77%;
   }
 
   .menu-section {
