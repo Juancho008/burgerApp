@@ -2,6 +2,7 @@ import { ContactShadows, Environment, Lightformer, useGLTF } from '@react-three/
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { enhanceBurgerMaterials } from './burgerTextures'
 
 // Modelo generado proceduralmente con Blender (tools/burger_blender.py).
 // Alto ~2.22 unidades (eje Y), ancho ~2.9; la base apoya en y=0.
@@ -9,20 +10,23 @@ const MODEL_HEIGHT = 2.22
 const MODEL_WIDTH = 2.95
 const MODEL_CENTER_Y = 1.1
 
-function BurgerModel() {
+function BurgerModel({ lowPower = false }) {
   const { scene } = useGLTF('/burger.glb')
 
   useEffect(() => {
+    enhanceBurgerMaterials(scene, { resolution: lowPower ? 256 : 512 })
+
     scene.traverse((child) => {
       if (child.isMesh) {
         child.castShadow = true
         child.receiveShadow = true
-        if (child.material) {
-          child.material.envMapIntensity = 0.85
-        }
+        const materials = Array.isArray(child.material) ? child.material : [child.material]
+        materials.forEach((material) => {
+          if (material) material.envMapIntensity = 1.05
+        })
       }
     })
-  }, [scene])
+  }, [scene, lowPower])
 
   return <primitive object={scene} position={[0, -MODEL_CENTER_Y, 0]} />
 }
@@ -75,7 +79,7 @@ export default function BurgerScene({ scrollProgress, lowPower = false, onReady 
       <pointLight position={[0, -3.5, 4.5]} intensity={5} color="#d84315" distance={14} />
 
       <group ref={groupRef} scale={scale} position={[targetX, 0, 0]}>
-        <BurgerModel />
+        <BurgerModel lowPower={lowPower} />
       </group>
 
       <ContactShadows
